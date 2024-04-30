@@ -1,0 +1,11 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: Course-Management-Service
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
