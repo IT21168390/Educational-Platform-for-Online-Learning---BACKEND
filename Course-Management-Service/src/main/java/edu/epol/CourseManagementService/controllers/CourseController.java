@@ -15,7 +15,7 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @PostMapping("/")
+    /*@PostMapping("/")
     public String addCourse(@RequestParam("file") MultipartFile file, @RequestParam("details") String details){
         try {
             return courseService.uploadFile(file, details);
@@ -27,5 +27,5 @@ public class CourseController {
     @GetMapping("/")
     public List<Course> getAllCourses(){
         return courseService.findAll();
-    }
+    }*/
 }

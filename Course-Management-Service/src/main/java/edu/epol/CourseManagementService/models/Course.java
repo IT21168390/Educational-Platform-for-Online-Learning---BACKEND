@@ -17,5 +17,5 @@ public class Course {
     private String name;
     private CourseContent course_content;
     private double price;
-    private Status status;
+    private Status status = Status.PENDING;
 }

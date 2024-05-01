@@ -11,6 +11,7 @@ import org.springframework.data.annotation.Id;
 public class LectureNote {
     @Id
     private String id;
-    private String note;
+    private String note_Url;
     private float weight;
+    private String description;
 }
