@@ -1,20 +1,16 @@
 package edu.epol.CourseManagementService.dao;
 
-import edu.epol.CourseManagementService.consts.Status;
-import edu.epol.CourseManagementService.models.CourseContent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourseDAO {
-    private String id;
+public class BasicCourseDTO {
     private String name;
-    private CourseContent course_content;
-    private String thumbnail;
     private String description;
+    private MultipartFile thumbnail;
     private double price;
-    private Status status;
 }

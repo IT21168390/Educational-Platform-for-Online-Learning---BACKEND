@@ -1,10 +1,15 @@
 package edu.epol.CourseManagementService.services.impl;
 
 import com.azure.storage.blob.BlobClient;
+import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.blob.models.BlobItem;
+import edu.epol.CourseManagementService.consts.CourseContentConsts;
 import edu.epol.CourseManagementService.consts.CourseContentWeights;
+import edu.epol.CourseManagementService.consts.Status;
 import edu.epol.CourseManagementService.converters.CourseDAOConverter;
+import edu.epol.CourseManagementService.dao.BasicCourseDTO;
 import edu.epol.CourseManagementService.dao.CourseDAO;
 import edu.epol.CourseManagementService.models.*;
 import edu.epol.CourseManagementService.repositories.CourseRepository;
@@ -16,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -46,6 +48,8 @@ public class CourseServiceImpl implements CourseService {
             courseDAO.setId(course.getId());
             courseDAO.setName(course.getName());
             courseDAO.setCourse_content(course.getCourse_content());
+            courseDAO.setDescription(course.getDescription());
+            courseDAO.setThumbnail(course.getThumbnail());
             courseDAO.setPrice(course.getPrice());
             courseDAO.setStatus(course.getStatus());
 
@@ -56,20 +60,61 @@ public class CourseServiceImpl implements CourseService {
 
     public CourseDAO findCourseById(String courseId) {
         Course course = courseRepository.findById(courseId).orElseThrow(NoSuchElementException::new);
-        return new CourseDAO(course.getId(), course.getName(), course.getCourse_content(), course.getPrice(), course.getStatus());
+        return new CourseDAO(course.getId(), course.getName(), course.getCourse_content(), course.getThumbnail(), course.getDescription(), course.getPrice(), course.getStatus());
     }
 
+    private String uploadCourseThumbnail(MultipartFile file, String id) throws IOException {
+        String blobFileName = id+"_Thumbnail_";//.concat(Objects.requireNonNull(file.getOriginalFilename()));
+
+        if (file.getOriginalFilename()!=null && file.getOriginalFilename().contains(".")) {
+            String extenson = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
+            blobFileName = blobFileName.concat("."+extenson);
+        }
+
+        BlobClient blobClient = blobServiceClient
+                .getBlobContainerClient(containerName)
+                .getBlobClient(blobFileName);
+
+        blobClient.upload(file.getInputStream(), file.getSize(), true);
+
+        return blobClient.getBlobUrl();
+    }
     @Override
-    public CourseDAO createCourse(CourseDAO courseDAO) {
+    public CourseDAO createCourse(BasicCourseDTO basicCourseDTO) {
         try {
-            Course newCourse = courseDAOConverter.convertCourseDAOToCourse(courseDAO);
-            Course course = courseRepository.save(newCourse);
+            Course newCourse = new Course();
+
+            newCourse.setName(basicCourseDTO.getName());
+            newCourse.setPrice(basicCourseDTO.getPrice());
+            newCourse.setCourse_content(new CourseContent(new LectureNote(), new Video(), new ArrayList<>()));
+            newCourse.setStatus(Status.PENDING);
+            newCourse.setDescription(basicCourseDTO.getDescription());
+
+            Course savedCourse = courseRepository.save(newCourse);
+
+            String thumbnailURL = uploadCourseThumbnail(basicCourseDTO.getThumbnail(), savedCourse.getId());
+            savedCourse.setThumbnail(thumbnailURL);
+            Course course = courseRepository.save(savedCourse);
+
             return courseDAOConverter.convertCourseToCourseDAO(course);
         } catch(Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
     }
+    /*@Override
+    public CourseDAO createCourse(CourseDAO courseDAO) {
+        try {
+            Course newCourse = courseDAOConverter.convertCourseDAOToCourse(courseDAO);
+            newCourse.setCourse_content(new CourseContent(new LectureNote(), new Video(), new ArrayList<>()));
+            newCourse.setStatus(Status.PENDING);
+            Course course = courseRepository.save(newCourse);
+            return courseDAOConverter.convertCourseToCourseDAO(course);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }*/
 
     @Override
     public CourseDAO updateFullCourse(CourseDAO courseDAO) {
@@ -79,18 +124,22 @@ public class CourseServiceImpl implements CourseService {
         course.setPrice(courseDAO.getPrice());
         course.setStatus(courseDAO.getStatus());
 
+        course.setDescription(courseDAO.getDescription());
+        course.setThumbnail(courseDAO.getThumbnail());
+
         Course updatedCourse = courseRepository.save(course);
         return courseDAOConverter.convertCourseToCourseDAO(updatedCourse);
     }
 
     @Override
-    public CourseDAO updateBasicCourseInformation(String courseId, String courseName, double price) {
+    public CourseDAO updateBasicCourseInformation(String courseId, String courseName, String description, double price) {
         Course course = courseRepository.findById(courseId).orElseThrow(NoSuchElementException::new);
         course.setName(courseName);
+        course.setDescription(description);
         course.setPrice(price);
 
         Course updatedCourse = courseRepository.save(course);
-        CourseDAO courseDAO = new CourseDAO(updatedCourse.getId(), updatedCourse.getName(), updatedCourse.getCourse_content(), updatedCourse.getPrice(), updatedCourse.getStatus());
+        CourseDAO courseDAO = new CourseDAO(updatedCourse.getId(), updatedCourse.getName(), updatedCourse.getCourse_content(), updatedCourse.getThumbnail(), updatedCourse.getDescription(), updatedCourse.getPrice(), updatedCourse.getStatus());
         return courseDAO;
     }
 
@@ -126,8 +175,16 @@ public class CourseServiceImpl implements CourseService {
         return "File uploaded.";
     }*/
 
-    private String uploadCourseContent(MultipartFile file, String description, float weight) throws IOException {
-        String blobFileName = file.getOriginalFilename();
+    private String uploadCourseContent(MultipartFile file, String courseId, CourseContentConsts courseContentClarification) throws IOException {
+        String blobFileName = courseId +"_"+ courseContentClarification.toString(); // file.getOriginalFilename();
+
+        if (file.getOriginalFilename()!=null && file.getOriginalFilename().contains(".")) {
+            String extenson = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
+            blobFileName = blobFileName.concat("."+extenson);
+        }
+
+        System.out.println("File upload initiated for: "+file.getContentType());
+
         BlobClient blobClient = blobServiceClient
                 .getBlobContainerClient(containerName)
                 .getBlobClient(blobFileName);
@@ -139,10 +196,11 @@ public class CourseServiceImpl implements CourseService {
 
     public LectureNote uploadLectureNote(String courseId, MultipartFile file, String description, float weight){
         try {
-            String fileURL = uploadCourseContent(file, description, weight);
             Course course = courseRepository.findById(courseId).get();
 
             CourseContent courseContent = course.getCourse_content();
+
+            String fileURL = uploadCourseContent(file, course.getId(), CourseContentConsts.LectureNote);
 
             LectureNote lectureNote = courseContent.getLecture_note();
             lectureNote.setNote_Url(fileURL);
@@ -160,9 +218,10 @@ public class CourseServiceImpl implements CourseService {
 
     public Video uploadCourseVideo(String courseId, MultipartFile file, String description, float weight){
         try {
-            String fileURL = uploadCourseContent(file, description, weight);
             Course course = courseRepository.findById(courseId).get();
             CourseContent courseContent = course.getCourse_content();
+
+            String fileURL = uploadCourseContent(file, course.getId(), CourseContentConsts.Video);
 
             Video courseVideo = courseContent.getVideo();
             courseVideo.setVideo_Url(fileURL);
@@ -251,6 +310,22 @@ public class CourseServiceImpl implements CourseService {
     }
 
     public void removeCourse(String courseId) {
+        try {
+            Course course = courseRepository.findById(courseId).get();
+            BlobContainerClient blobContainerClient = blobServiceClient.getBlobContainerClient(containerName);
+
+            for (BlobItem blobItem : blobContainerClient.listBlobsByHierarchy(course.getId())) {
+                String blobName = blobItem.getName();
+                // Check whether the blob name starts with the specified id or not
+                if (blobName.startsWith(course.getId())) {
+                    blobContainerClient.getBlobClient(blobName).delete();
+                    System.out.println("File "+blobName+" deleted from the Azure storage.");
+                }
+            }
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Course "+courseId+" has been removed from the database.");
             courseRepository.deleteById(courseId);
     }
 
