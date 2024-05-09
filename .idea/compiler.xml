@@ -6,13 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="API-Gateway" />
         <module name="Course-Management-Service" />
+        <module name="Config-Server" />
+        <module name="Service-Registry" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="API-Gateway" options="-parameters" />
+      <module name="Config-Server" options="-parameters" />
       <module name="Course-Management-Service" options="-parameters" />
+      <module name="Service-Registry" options="-parameters" />
     </option>
   </component>
 </project>

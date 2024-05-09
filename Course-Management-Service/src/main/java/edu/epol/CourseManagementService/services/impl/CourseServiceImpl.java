@@ -87,7 +87,7 @@ public class CourseServiceImpl implements CourseService {
             newCourse.setName(basicCourseDTO.getName());
             newCourse.setPrice(basicCourseDTO.getPrice());
             newCourse.setCourse_content(new CourseContent(new LectureNote(), new Video(), new ArrayList<>()));
-            newCourse.setStatus(Status.PENDING);
+            newCourse.setStatus(Status.DRAFT);
             newCourse.setDescription(basicCourseDTO.getDescription());
 
             Course savedCourse = courseRepository.save(newCourse);
@@ -209,6 +209,13 @@ public class CourseServiceImpl implements CourseService {
 
             courseContent.setLecture_note(lectureNote);
             course.setCourse_content(courseContent);
+
+            if (course.getStatus().equals(Status.DRAFT)) {
+                if (course.getCourse_content().getVideo().getVideo_Url()!=null && course.getCourse_content().getLecture_note().getNote_Url()!=null) {
+                    course.setStatus(Status.PENDING);
+                }
+            }
+
             Course updatedCourse = courseRepository.save(course);
             return updatedCourse.getCourse_content().getLecture_note();
         } catch (IOException e) {
@@ -230,6 +237,13 @@ public class CourseServiceImpl implements CourseService {
 
             courseContent.setVideo(courseVideo);
             course.setCourse_content(courseContent);
+
+            if (course.getStatus().equals(Status.DRAFT)) {
+                if (course.getCourse_content().getVideo().getVideo_Url()!=null && course.getCourse_content().getLecture_note().getNote_Url()!=null) {
+                    course.setStatus(Status.PENDING);
+                }
+            }
+
             Course updatedCourse = courseRepository.save(course);
             return updatedCourse.getCourse_content().getVideo();
         } catch (IOException e) {

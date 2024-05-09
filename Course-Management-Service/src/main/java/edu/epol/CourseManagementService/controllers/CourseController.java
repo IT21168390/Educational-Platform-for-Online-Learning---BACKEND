@@ -77,9 +77,9 @@ public class CourseController {
     }
 
     @PutMapping("/instructor/update/info/{courseId}")
-    public ResponseEntity<?> updateBasicCourseInfo(@PathVariable String courseId, @RequestParam String courseName, @RequestParam String description, @RequestParam double coursePrice) {
+    public ResponseEntity<?> updateBasicCourseInfo(@PathVariable String courseId, @RequestBody BasicCourseDTO basicCourseDTO) {
         try {
-            CourseDAO course = courseService.updateBasicCourseInformation(courseId, courseName, description, coursePrice);
+            CourseDAO course = courseService.updateBasicCourseInformation(courseId, basicCourseDTO.getName(), basicCourseDTO.getDescription(), basicCourseDTO.getPrice());
             return new ResponseEntity<>(course, HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
             System.out.println(e.getMessage());

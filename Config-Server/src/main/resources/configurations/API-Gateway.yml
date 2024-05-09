@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: API-Gateway
+#  cloud:
+#    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#      routes:
+#        - id: Course-Management-Service
+#          uri: lb://Course-Management-Service
+#          predicates:
+#            - Path=/api/v1/courses/**
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: Course-Management-Service
+           #uri: http://localhost:8083
+            uri: lb://Course-Management-Service
+            predicates:
+              - Path=/api/v1/courses/**
+
+server:
+  port: 8081
+
+eureka:
+  client:
+    register-with-eureka: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+# Trace everything with Zipkin
+management:
+  tracing:
+    sampling:
+      probability: 1.0
