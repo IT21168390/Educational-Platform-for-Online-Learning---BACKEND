@@ -1,7 +1,10 @@
 package edu.epol.CourseManagementService.controllers;
 
+import edu.epol.CourseManagementService.clients.LearnerClient;
+import edu.epol.CourseManagementService.consts.Status;
 import edu.epol.CourseManagementService.dao.BasicCourseDTO;
 import edu.epol.CourseManagementService.dao.CourseDAO;
+import edu.epol.CourseManagementService.dao.LearnerProgressDto;
 import edu.epol.CourseManagementService.models.Course;
 import edu.epol.CourseManagementService.models.LectureNote;
 import edu.epol.CourseManagementService.models.Quiz;
@@ -23,6 +26,9 @@ import java.util.NoSuchElementException;
 public class CourseController {
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private LearnerClient learnerClient;
 
     /*@PostMapping("/")
     public String addCourse(@RequestParam("file") MultipartFile file, @RequestParam("details") String details){
@@ -69,6 +75,17 @@ public class CourseController {
     public ResponseEntity<List<CourseDAO>> getAllCourses() {
         try {
             List<CourseDAO> courses = courseService.findAll();
+            return new ResponseEntity<>(courses, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/public/available")
+    public ResponseEntity<List<CourseDAO>> getApprovedCourses() {
+        try {
+            List<CourseDAO> courses = courseService.findCoursesByStatus(Status.APPROVED);
             return new ResponseEntity<>(courses, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             System.out.println(e.getMessage());
@@ -139,6 +156,18 @@ public class CourseController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Access Learner Service for Learner Progress data
+    @GetMapping("/learner_progress/{courseId}")
+    public ResponseEntity<List<LearnerProgressDto>> getLearnerProgress(@PathVariable String courseId) {
+        try {
+            List<LearnerProgressDto> learnerProgressList = learnerClient.getLearnerProgresses(courseId);
+            return new ResponseEntity<>(learnerProgressList, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

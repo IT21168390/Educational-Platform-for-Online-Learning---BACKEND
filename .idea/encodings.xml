@@ -2,8 +2,15 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/API-Gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Administrative-Service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Authentication-Service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Config-Server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Course-Management-Service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/LearnerService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Payment-Service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Service-Registry/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/notificationService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring_cloud_API_gateway_overview-master/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/stripe-payment-service/src/main/java" charset="UTF-8" />
   </component>
 </project>

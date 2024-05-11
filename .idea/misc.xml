@@ -8,7 +8,21 @@
         <option value="$PROJECT_DIR$/Config-Server/pom.xml" />
         <option value="$PROJECT_DIR$/Service-Registry/pom.xml" />
         <option value="$PROJECT_DIR$/API-Gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/Administrative-Service/pom.xml" />
+        <option value="$PROJECT_DIR$/spring_cloud_API_gateway_overview-master/pom.xml" />
+        <option value="$PROJECT_DIR$/Authentication-Service/pom.xml" />
+        <option value="$PROJECT_DIR$/notificationService/pom.xml" />
+        <option value="$PROJECT_DIR$/LearnerService/pom.xml" />
+        <option value="$PROJECT_DIR$/server/pom.xml" />
+        <option value="$PROJECT_DIR$/employee-service/pom.xml" />
+        <option value="$PROJECT_DIR$/stripe-payment-service/pom.xml" />
+        <option value="$PROJECT_DIR$/Payment-Service/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/spring_cloud_API_gateway_overview-master/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">

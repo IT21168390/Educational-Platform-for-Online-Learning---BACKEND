@@ -18,6 +18,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -56,6 +57,22 @@ public class CourseServiceImpl implements CourseService {
             courseDAOList.add(courseDAO);
         }
         return courseDAOList;
+    }
+
+    @Override
+    public List<CourseDAO> findCoursesByStatus(Status status) {
+        try {
+            List<Course> courses = courseRepository.findAllByStatus(status);
+            List<CourseDAO> courseDAOList = new ArrayList<>();
+            for (Course course: courses) {
+                CourseDAO courseDAO = courseDAOConverter.convertCourseToCourseDAO(course);
+                courseDAOList.add(courseDAO);
+            }
+            return courseDAOList;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public CourseDAO findCourseById(String courseId) {
@@ -257,13 +274,13 @@ public class CourseServiceImpl implements CourseService {
 
         int quizzesCount = 0;
 
-        float currentTotalWeight = 0;
+        /*float currentTotalWeight = 0;
         if (!quizzes.isEmpty()){
             for (Quiz quiz: quizzes) {
                 currentTotalWeight += quiz.getWeight();
                 quizzesCount++;
             }
-        }
+        }*/
 
         float newQuizzesTotalWeight = 0;
         String quizWithIssues = "";
@@ -285,7 +302,7 @@ public class CourseServiceImpl implements CourseService {
             }
         }
 
-        if (currentTotalWeight+newQuizzesTotalWeight > CourseContentWeights.COURSE_QUIZZES_WEIGHT) {
+        if (/*currentTotalWeight+*/newQuizzesTotalWeight > CourseContentWeights.COURSE_QUIZZES_WEIGHT) {
             throw new IOException("Quizzes weights exceed the allowed maximum amount!");
         } else if (!validAnswers) {
             throw new IOException("Quiz ("+quizWithIssues+")'s answer is not included in options!");
@@ -294,13 +311,17 @@ public class CourseServiceImpl implements CourseService {
         CourseContent courseContent = course.getCourse_content();
 
         if (!quizList.isEmpty()){
+            quizzes.clear();
             for (Quiz quiz: quizList) {
+                if (quiz.getId().isEmpty() || quiz.getId().isBlank() || quiz.getId() == null) {
+                    quiz.setId(UUID.randomUUID().toString() + Long.toHexString(System.currentTimeMillis()));
+                }
                 quizzes.add(quiz);
             }
             courseContent.setQuizzes(quizzes);
         }
 
-        if ((currentTotalWeight+newQuizzesTotalWeight) < CourseContentWeights.COURSE_QUIZZES_WEIGHT) {
+        if ((/*currentTotalWeight*/+newQuizzesTotalWeight) < CourseContentWeights.COURSE_QUIZZES_WEIGHT) {
             float weightForEachQuiz = CourseContentWeights.COURSE_QUIZZES_WEIGHT / quizzesCount;
             for (Quiz quiz: courseContent.getQuizzes()) {
                 quiz.setWeight(weightForEachQuiz);

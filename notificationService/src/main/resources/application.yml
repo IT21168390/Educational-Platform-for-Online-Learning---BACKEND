@@ -1,0 +1,38 @@
+# SMTP Configuration
+#spring.mail.host=smtp-relay.brevo.com
+#spring.mail.port=587
+#spring.mail.username=7485f1001@smtp-brevo.com
+#spring.mail.password=1WQUGPY4RC9rOIyV
+#spring.mail.properties.mail.smtp.auth=true
+#spring.mail.properties.mail.smtp.starttls.enable=true
+#spring.mail.properties.mail.smtp.starttls.required=true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  application:
+    name: notificationServicespring
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  data:
+    mongodb:
+      uri: mongodb+srv://hashanmadhuwantha2000:0nDyIlj8FhZQTj4H@educational-platform.etxrxi5.mongodb.net/Educational-Platform?retryWrites=true&w=majority&appName=Educational-Platform
+      auto-index-creation: true
+
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: 7485f1001@smtp-brevo.com
+    password: 1WQUGPY4RC9rOIyV
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+server:
+  port: 8087

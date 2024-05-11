@@ -1,6 +1,60 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: API-Gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: Course-Management-Service
+          uri: lb://Course-Management-Service
+          predicates:
+            - Path=/api/v1/courses/**
+#          filters:
+#            - AuthenticationFilter
+
+        - id: LearnerService
+          uri: lb://LearnerService
+          predicates:
+            - Path=/api/LearnerService/**
+
+        - id: Administrative-Service
+          uri: lb://Administrative-Service
+          predicates:
+            - Path=/admin/**
+
+        - id: notificationServicespring
+          uri: lb://notificationServicespring
+          predicates:
+            - Path=/api/v1/users/**
+
+        - id: Payment-Service
+          uri: lb://Payment-Service
+          predicates:
+            - Path=/payment/**
+
+        - id: Authentication-Service
+          uri: lb://Authentication-Service
+          predicates:
+            - Path=/api/v1/auth/**
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
 #  cloud:
 #    gateway:
 #      discovery:
@@ -11,22 +65,19 @@ spring:
 #          uri: lb://Course-Management-Service
 #          predicates:
 #            - Path=/api/v1/courses/**
-  cloud:
-    gateway:
-      mvc:
-        routes:
-          - id: Course-Management-Service
-           #uri: http://localhost:8083
-            uri: lb://Course-Management-Service
-            predicates:
-              - Path=/api/v1/courses/**
-
-server:
-  port: 8081
+#  cloud:
+#    gateway:
+#      mvc:
+#        routes:
+#          - id: Course-Management-Service
+#           #uri: http://localhost:8083
+#            uri: lb://Course-Management-Service
+#            predicates:
+#              - Path=/api/v1/courses/**
 
 eureka:
   client:
-    register-with-eureka: false
+    register-with-eureka: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 

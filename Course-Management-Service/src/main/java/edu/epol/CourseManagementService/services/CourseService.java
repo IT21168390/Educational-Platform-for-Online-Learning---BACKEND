@@ -1,5 +1,6 @@
 package edu.epol.CourseManagementService.services;
 
+import edu.epol.CourseManagementService.consts.Status;
 import edu.epol.CourseManagementService.dao.BasicCourseDTO;
 import edu.epol.CourseManagementService.dao.CourseDAO;
 import edu.epol.CourseManagementService.models.Course;
@@ -14,6 +15,7 @@ import java.util.List;
 public interface CourseService {
     //String uploadFile(MultipartFile file, String details) throws IOException;
     List<CourseDAO> findAll();
+    List<CourseDAO> findCoursesByStatus(Status status);
     CourseDAO findCourseById(String courseId);
     CourseDAO createCourse(BasicCourseDTO basicCourseDTO);
     CourseDAO updateFullCourse(CourseDAO courseDAO);

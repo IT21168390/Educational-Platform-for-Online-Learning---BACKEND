@@ -10,8 +10,8 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @Data
 public class LectureNote {
-    @Id
-    private String id;
+    /*@Id
+    private String id;*/
     private String note_Url;
     private float weight = CourseContentWeights.LECTURE_NOTES_WEIGHT;
     private String description;

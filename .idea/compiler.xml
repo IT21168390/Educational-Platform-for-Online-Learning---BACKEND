@@ -6,19 +6,35 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="stripe-payment-service" />
         <module name="API-Gateway" />
+        <module name="Authentication-Service" />
         <module name="Course-Management-Service" />
+        <module name="LearnerService" />
+        <module name="Payment-Service" />
+        <module name="notificationService" />
+        <module name="Administrative-Service" />
         <module name="Config-Server" />
         <module name="Service-Registry" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="spring-cloud-gateway-overview" target="11" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="API-Gateway" options="-parameters" />
+      <module name="Administrative-Service" options="-parameters" />
+      <module name="Authentication-Service" options="-parameters" />
       <module name="Config-Server" options="-parameters" />
       <module name="Course-Management-Service" options="-parameters" />
+      <module name="LearnerService" options="-parameters" />
+      <module name="Payment-Service" options="" />
       <module name="Service-Registry" options="-parameters" />
+      <module name="notificationService" options="-parameters" />
+      <module name="spring-cloud-gateway-overview" options="-parameters" />
+      <module name="stripe-payment-service" options="-parameters" />
     </option>
   </component>
 </project>
