@@ -1,10 +1,8 @@
 package com.epol.AuthenticationService.controllers;
 
-import com.epol.AuthenticationService.dto.JwtAuthenticationResponseDTO;
-import com.epol.AuthenticationService.dto.SignInRequestDTO;
-import com.epol.AuthenticationService.dto.SignUpRequestDTO;
-import com.epol.AuthenticationService.dto.UserDTO;
+import com.epol.AuthenticationService.dto.*;
 import com.epol.AuthenticationService.services.AuthenticationService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-//@RequiredArgsConstructor
-//@CrossOrigin
 public class AuthenticationController {
-    //private final AuthenticationService authenticationService;
     @Autowired
     private AuthenticationService authenticationService;
 
@@ -45,7 +40,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/validate")
-    public boolean validateToken(@RequestParam String token) {
+    public TokenValidationResult validateToken(@RequestParam String token) {
+        System.out.println(token);
         return authenticationService.validateToken(token);
     }
 

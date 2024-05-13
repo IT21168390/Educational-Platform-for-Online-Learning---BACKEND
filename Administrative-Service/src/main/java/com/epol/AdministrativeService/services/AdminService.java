@@ -10,8 +10,4 @@ import java.util.List;
 public interface AdminService {
     CourseDAO updateStatus(String courseId, String courseName,  Status status);
 
-    EnrollmentDAO approveEnrollment(String enrollmentId, EnrollmentStatus Status);
-
-    List<CourseDAO> findAll();
-
 }

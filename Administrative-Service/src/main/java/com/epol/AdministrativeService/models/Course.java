@@ -16,7 +16,8 @@ public class Course {
     private String id;
     private String name;
     private CourseContent course_content;
+    private String thumbnail;
+    private String description;
     private double price;
-    private Status status = Status.PENDING;
-
+    private Status status;
 }

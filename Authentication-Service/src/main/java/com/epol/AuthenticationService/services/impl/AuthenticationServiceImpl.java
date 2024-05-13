@@ -1,9 +1,6 @@
 package com.epol.AuthenticationService.services.impl;
 
-import com.epol.AuthenticationService.dto.JwtAuthenticationResponseDTO;
-import com.epol.AuthenticationService.dto.SignInRequestDTO;
-import com.epol.AuthenticationService.dto.SignUpRequestDTO;
-import com.epol.AuthenticationService.dto.UserDTO;
+import com.epol.AuthenticationService.dto.*;
 import com.epol.AuthenticationService.models.User;
 import com.epol.AuthenticationService.models.UserRoles;
 import com.epol.AuthenticationService.repositories.UserRepository;
@@ -13,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,24 +55,39 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthenticationResponseDTO signIn(SignInRequestDTO signInRequest) throws IllegalArgumentException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
         var user = userRepository.findByEmail(signInRequest.getEmail());
-        //UserDetails userDetails = userRepository.findByEmail(signInRequest.getEmail());
-        //UserDTO userDTO = new UserDTO();
         var jwt = jwtService.generateToken(user);
 
         JwtAuthenticationResponseDTO jwtAuthenticationResponseDTO = new JwtAuthenticationResponseDTO();
         jwtAuthenticationResponseDTO.setToken(jwt);
         jwtAuthenticationResponseDTO.setEmail(user.getUsername());
+        User userData = userRepository.findFirstByEmail(user.getUsername());
+        jwtAuthenticationResponseDTO.setUserId(userData.getId());
+        jwtAuthenticationResponseDTO.setUserRole(userData.getUserRole());
 
         return jwtAuthenticationResponseDTO;
     }
 
-    public boolean validateToken(String token) {
+    public TokenValidationResult validateToken(String token) {
         try {
-            jwtService.validateToken(token);
-            return true;
+            UserDetails userDetails = jwtService.extractUserDetails(token);
+
+            // Check if the token is expired
+            if (jwtService.isTokenExpired(token)) {
+                return new TokenValidationResult(false, "Token expired", null, null);
+            }
+
+            // Check if the token is valid for the user
+            if (!jwtService.isTokenValid(token, userDetails)) {
+                return new TokenValidationResult(false, "Invalid token", null, null);
+            }
+
+            // Get user role and userId
+            String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
+            String userId = userDetails.getUsername();
+
+            return new TokenValidationResult(true, "Token is valid", userRole, userId);
         } catch (Exception e) {
-            log.warn(e.getMessage());
-            return false;
+            return new TokenValidationResult(false, "Error validating token", null, null);
         }
     }
 

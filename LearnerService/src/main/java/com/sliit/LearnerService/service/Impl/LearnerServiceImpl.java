@@ -27,7 +27,6 @@ import java.util.List;
 public class LearnerServiceImpl implements LearnerService {
 
     private final UserEnrolledCourseRepository userEnrolledCourseRepository;
-//    private final EnrolledCourseProgressRepository enrolledCourseProgressRepository;
     private final WebClient webClient;
     
     private static final Logger log = LoggerFactory.getLogger(LearnerServiceImpl.class);
@@ -58,7 +57,6 @@ public class LearnerServiceImpl implements LearnerService {
 
                 // method
 
-                //savedCourse.setStatus(CommonStatus.ACTIVE);
                 responseDto.setApiStatus(ApiStatus.SUCCESS);
                 responseDto.setSuccess(true);
             } else {
@@ -112,7 +110,7 @@ public class LearnerServiceImpl implements LearnerService {
 		        //Find Courses By Course IDs
 		        for(String i : courseIds){
 		            // Call the APi to find the CourseDto by course Id
-		        	CourseDto course = webClient.get().uri("http://localhost:8083/api/course")
+		        	CourseDto course = webClient.get().uri("http://localhost:8081/api/v1/courses/public/available")
 		        				   .retrieve().bodyToMono(CourseDto.class).block();
 	                if (course != null) {
 	                    courseDtoList.add(course);

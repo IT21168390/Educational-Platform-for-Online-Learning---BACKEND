@@ -1,21 +1,5 @@
 spring:
   application:
     name: Administrative-Service
-  data:
-    mongodb:
-      uri: mongodb+srv://sarangagunasekara20:saranga20@cluster0.tnwfav4.mongodb.net/Administrative-Service
-      auto-index-creation: true
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
   config:
     import: "optional:configserver:http://localhost:8888"
-
-server:
-  port: 8086
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/

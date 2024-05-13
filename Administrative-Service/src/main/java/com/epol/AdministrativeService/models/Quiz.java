@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 public class Quiz {
     @Id
     private String id;
-    @Indexed(unique = true)
+    //@Indexed(unique = true)
     private String question;
     private String answer;
     private String[] options = new String[4];

@@ -16,28 +16,36 @@ spring:
           uri: lb://Course-Management-Service
           predicates:
             - Path=/api/v1/courses/**
-#          filters:
+          filters:
 #            - AuthenticationFilter
 
         - id: LearnerService
           uri: lb://LearnerService
           predicates:
             - Path=/api/LearnerService/**
+          filters:
+#            - AuthenticationFilter
 
         - id: Administrative-Service
           uri: lb://Administrative-Service
           predicates:
             - Path=/admin/**
+          filters:
+#            - AuthenticationFilter
 
         - id: notificationServicespring
           uri: lb://notificationServicespring
           predicates:
             - Path=/api/v1/users/**
+          filters:
+            - AuthenticationFilter
 
         - id: Payment-Service
           uri: lb://Payment-Service
           predicates:
             - Path=/payment/**
+          filters:
+#            - AuthenticationFilter
 
         - id: Authentication-Service
           uri: lb://Authentication-Service
@@ -55,25 +63,6 @@ spring:
               - POST
               - DELETE
               - PUT
-#  cloud:
-#    gateway:
-#      discovery:
-#        locator:
-#          enabled: true
-#      routes:
-#        - id: Course-Management-Service
-#          uri: lb://Course-Management-Service
-#          predicates:
-#            - Path=/api/v1/courses/**
-#  cloud:
-#    gateway:
-#      mvc:
-#        routes:
-#          - id: Course-Management-Service
-#           #uri: http://localhost:8083
-#            uri: lb://Course-Management-Service
-#            predicates:
-#              - Path=/api/v1/courses/**
 
 eureka:
   client:

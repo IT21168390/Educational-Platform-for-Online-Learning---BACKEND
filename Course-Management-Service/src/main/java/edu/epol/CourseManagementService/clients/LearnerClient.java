@@ -10,6 +10,7 @@ import java.util.List;
 
 @HttpExchange
 public interface LearnerClient {
+    // Access LearnerService to fetch the Learner Progress data for a specific course.
     @GetExchange(value = "/api/LearnerService/CourseLearnerProgresses/{courseId}")
     public @ResponseBody List<LearnerProgressDto> getLearnerProgresses(@PathVariable String courseId);
 }

@@ -1,5 +1,6 @@
 package com.epol.AdministrativeService.controllers;
 
+import com.epol.AdministrativeService.clients.CourseClient;
 import com.epol.AdministrativeService.consts.EnrollmentStatus;
 import com.epol.AdministrativeService.consts.Status;
 import com.epol.AdministrativeService.dao.CourseDAO;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/admin")
@@ -26,6 +28,8 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private CourseClient courseClient;
 
     @PutMapping("/courses/{courseId}/status")
     public ResponseEntity<CourseDAO> updateCourseStatus(
@@ -43,29 +47,14 @@ public class AdminController {
         return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
     }
 
-
-    @PutMapping("/enrollments/{enrollmentId}/status")
-    public ResponseEntity<EnrollmentDAO> approveEnrollment(
-            @PathVariable String enrollmentId,
-            @RequestBody UpdateEnrollmentRequestDAO request) {
-
-        EnrollmentStatus status = request.getStatus();
-
-        // Call the service method to approve enrollment
-        EnrollmentDAO approvedEnrollment = adminService.approveEnrollment(enrollmentId, status);
-//        return new ResponseEntity<>(approvedEnrollment, HttpStatus.OK);
-
-        if (approvedEnrollment != null) {
-            return ResponseEntity.ok(approvedEnrollment);
-        } else {
-            // Return 404 if enrollment is not found
-            return ResponseEntity.notFound().build();
+    @GetMapping("/api/v1/courses/public/all")
+    public ResponseEntity<List<CourseDAO>> getAllCourses(){
+        try {
+            List<CourseDAO> courseList = courseClient.getAllCourses().getBody();
+            return new ResponseEntity<>(courseList, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-
-    @GetMapping("/")
-    public List<CourseDAO> getAllCourses() {
-        return adminService.findAll();
     }
 }

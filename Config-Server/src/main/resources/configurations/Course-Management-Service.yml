@@ -1,0 +1,25 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: Course-Management-Service
+  data:
+    mongodb:
+      uri: mongodb+srv://hashanmadhuwantha2000:0nDyIlj8FhZQTj4H@educational-platform.etxrxi5.mongodb.net/Educational-Platform?retryWrites=true&w=majority&appName=Educational-Platform
+      auto-index-creation: true
+  cloud:
+    azure:
+      storage:
+        blob:
+          connection-string: BlobEndpoint=https://dsonlinelearningplatform.blob.core.windows.net/;QueueEndpoint=https://dsonlinelearningplatform.queue.core.windows.net/;FileEndpoint=https://dsonlinelearningplatform.file.core.windows.net/;TableEndpoint=https://dsonlinelearningplatform.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=co&sp=rwdlacupiytfx&se=2024-06-01T21:28:18Z&st=2024-05-01T13:28:18Z&spr=https&sig=e0pKZZoky5QFyEQUTBc58Jgk%2BQV0EgMLDr8BSQrrkDw%3D
+          container-name: course-content
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

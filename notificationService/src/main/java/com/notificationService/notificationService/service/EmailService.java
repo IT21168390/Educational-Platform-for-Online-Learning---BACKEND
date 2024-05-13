@@ -26,17 +26,4 @@ public class EmailService {
         javaMailSender.send(message);
     }
     
-//    public void sendEnrollmentConfirmationEmail(CourseEnrollment enrollment) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setSubject("Course Enrollment Confirmation");
-//        message.setTo("vasjanani3@gmail.com");
-//        message.setText("Dear " + enrollment.getLearnerName() + ",\n\n"
-//                + "Thank you for enrolling in our course " + enrollment.getCourseName() + ".\n"
-//                + "We are excited to have you on board!\n\n"
-//                + "Best regards,\n"
-//                + "Your Course Provider");
-//
-//        javaMailSender.send(message);
-//    }
-    
 }

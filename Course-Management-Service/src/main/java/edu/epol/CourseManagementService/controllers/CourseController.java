@@ -5,7 +5,6 @@ import edu.epol.CourseManagementService.consts.Status;
 import edu.epol.CourseManagementService.dao.BasicCourseDTO;
 import edu.epol.CourseManagementService.dao.CourseDAO;
 import edu.epol.CourseManagementService.dao.LearnerProgressDto;
-import edu.epol.CourseManagementService.models.Course;
 import edu.epol.CourseManagementService.models.LectureNote;
 import edu.epol.CourseManagementService.models.Quiz;
 import edu.epol.CourseManagementService.models.Video;
@@ -24,26 +23,16 @@ import java.util.NoSuchElementException;
 @CrossOrigin
 @RequestMapping("/api/v1/courses")
 public class CourseController {
+    // Inject CourseService to access course related services
     @Autowired
     private CourseService courseService;
 
+    // Inject LearnerClient to access LearnerSevice API
     @Autowired
     private LearnerClient learnerClient;
 
-    /*@PostMapping("/")
-    public String addCourse(@RequestParam("file") MultipartFile file, @RequestParam("details") String details){
-        try {
-            return courseService.uploadFile(file, details);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @GetMapping("/")
-    public List<Course> getAllCourses(){
-        return courseService.findAll();
-    }*/
-    @PostMapping(value = "/instructor/add-course"/*, consumes = "multipart/form-data"*/)
+    // Get basic Course data to create a new course.
+    @PostMapping(value = "/instructor/add-course")
     public ResponseEntity<CourseDAO> addNewCourse(@RequestParam String name, @RequestParam String description, @RequestParam MultipartFile thumbnail, double price) {
         CourseDAO courseDAO = courseService.createCourse(new BasicCourseDTO(name, description, thumbnail, price));
         if (courseDAO==null) {
@@ -51,15 +40,8 @@ public class CourseController {
         }
         return new ResponseEntity<>(courseDAO, HttpStatus.CREATED);
     }
-    /*@PostMapping("/instructor/add-course")
-    public ResponseEntity<CourseDAO> addNewCourse(@RequestBody CourseDAO course) {
-        CourseDAO courseDAO = courseService.createCourse(course);
-        if (courseDAO==null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(courseDAO, HttpStatus.CREATED);
-    }*/
 
+    // Return a specific course data.
     @GetMapping("/public/{courseId}")
     public ResponseEntity<CourseDAO> getCourse(@PathVariable String courseId) {
         try {
@@ -71,6 +53,7 @@ public class CourseController {
         }
     }
 
+    // Return all courses data.
     @GetMapping("/public/all")
     public ResponseEntity<List<CourseDAO>> getAllCourses() {
         try {
@@ -82,6 +65,7 @@ public class CourseController {
         }
     }
 
+    // Return approved courses only, which are going to be accessed by the LearnerService.
     @GetMapping("/public/available")
     public ResponseEntity<List<CourseDAO>> getApprovedCourses() {
         try {
@@ -93,6 +77,7 @@ public class CourseController {
         }
     }
 
+    // Update basic information of a course.
     @PutMapping("/instructor/update/info/{courseId}")
     public ResponseEntity<?> updateBasicCourseInfo(@PathVariable String courseId, @RequestBody BasicCourseDTO basicCourseDTO) {
         try {
@@ -104,6 +89,7 @@ public class CourseController {
         }
     }
 
+    // Update an existing course with Lecture Note data.
     @PutMapping("/instructor/add/{courseId}/lecture_note")
     public ResponseEntity<?> addLectureNotesToCourse(@PathVariable String courseId, @RequestParam MultipartFile file, @RequestParam String description, @RequestParam float weight) {
         try {
@@ -115,6 +101,7 @@ public class CourseController {
         }
     }
 
+    // Update an existing course with Lecture Video and relevant information.
     @PutMapping("/instructor/add/{courseId}/video")
     public ResponseEntity<?> addVideoToCourse(@PathVariable String courseId, @RequestParam MultipartFile file, @RequestParam String description, @RequestParam float weight) {
         try {
@@ -126,6 +113,7 @@ public class CourseController {
         }
     }
 
+    // Update an existing course by adding or modifying Quizzes list.
     @PutMapping("/instructor/add/{courseId}/quizzes")
     public ResponseEntity<?> addQuizzesToCourse(@PathVariable String courseId, @RequestBody List<Quiz> quizList) {
         try {
@@ -137,6 +125,7 @@ public class CourseController {
         }
     }
 
+    // Remove a quiz from a specific course.
     @DeleteMapping("/instructor/remove/quiz/{courseId}")
     public ResponseEntity<List<Quiz>> removeQuizFromCourse(@PathVariable String courseId, @RequestBody Quiz quiz) {
         try {
@@ -148,6 +137,7 @@ public class CourseController {
         }
     }
 
+    // Completely delete a course from the database.
     @DeleteMapping("/instructor/remove/course/{courseId}")
     public ResponseEntity<?> removeCourse(@PathVariable String courseId) {
         try {
@@ -159,7 +149,7 @@ public class CourseController {
         }
     }
 
-    // Access Learner Service for Learner Progress data
+    // Access Learner Service for Learner Progress data.
     @GetMapping("/learner_progress/{courseId}")
     public ResponseEntity<List<LearnerProgressDto>> getLearnerProgress(@PathVariable String courseId) {
         try {

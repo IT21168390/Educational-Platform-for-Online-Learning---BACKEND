@@ -18,7 +18,6 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -119,19 +118,6 @@ public class CourseServiceImpl implements CourseService {
             return null;
         }
     }
-    /*@Override
-    public CourseDAO createCourse(CourseDAO courseDAO) {
-        try {
-            Course newCourse = courseDAOConverter.convertCourseDAOToCourse(courseDAO);
-            newCourse.setCourse_content(new CourseContent(new LectureNote(), new Video(), new ArrayList<>()));
-            newCourse.setStatus(Status.PENDING);
-            Course course = courseRepository.save(newCourse);
-            return courseDAOConverter.convertCourseToCourseDAO(course);
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
-    }*/
 
     @Override
     public CourseDAO updateFullCourse(CourseDAO courseDAO) {
@@ -167,30 +153,6 @@ public class CourseServiceImpl implements CourseService {
                 .buildClient();
     }
 
-    /*public String uploadFile(MultipartFile file, String details) throws IOException {
-        String blobFileName = file.getOriginalFilename();
-        BlobClient blobClient = blobServiceClient
-                .getBlobContainerClient(containerName)
-                .getBlobClient(blobFileName);
-
-        blobClient.upload(file.getInputStream(), file.getSize(), true);
-
-        String fileURL = blobClient.getBlobUrl();
-
-        Course course = new Course();
-        course.setName("Test");
-        course.setStatus(Status.PENDING);
-        course.setPrice(100);
-
-        CourseContent courseContent = new CourseContent();
-        courseContent.setLecture_note(new LectureNote(null,fileURL, 25, ""));
-
-        course.setCourse_content(courseContent);
-
-        courseRepository.save(course);
-
-        return "File uploaded.";
-    }*/
 
     private String uploadCourseContent(MultipartFile file, String courseId, CourseContentConsts courseContentClarification) throws IOException {
         String blobFileName = courseId +"_"+ courseContentClarification.toString(); // file.getOriginalFilename();
@@ -274,14 +236,6 @@ public class CourseServiceImpl implements CourseService {
 
         int quizzesCount = 0;
 
-        /*float currentTotalWeight = 0;
-        if (!quizzes.isEmpty()){
-            for (Quiz quiz: quizzes) {
-                currentTotalWeight += quiz.getWeight();
-                quizzesCount++;
-            }
-        }*/
-
         float newQuizzesTotalWeight = 0;
         String quizWithIssues = "";
         boolean validAnswers = true;
@@ -290,9 +244,6 @@ public class CourseServiceImpl implements CourseService {
                 newQuizzesTotalWeight += quiz.getWeight();
                 quizzesCount++;
 
-                /*String[] quizOptions = quiz.getOptions();
-                ArrayList<String> quizOptionsList = new ArrayList<>());
-                quizOptionsList.addAll(Arrays.asList(quizOptions));*/
                 ArrayList<String> quizOptions = new ArrayList<>(Arrays.asList(quiz.getOptions()));
 
                 if (!quizOptions.contains(quiz.getAnswer())) {
