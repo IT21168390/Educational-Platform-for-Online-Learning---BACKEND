@@ -1,0 +1,13 @@
+Backend:
+
+https://github.com/IT21168390/Educational-Platform-for-Online-Learning---BACKEND
+
+
+Frontend:
+
+https://github.com/IT21168390/Educational-Platform-for-Online-Learning---Frontend
+
+
+YouTube Video:
+
+https://youtu.be/OjSNpiIi3Y4
