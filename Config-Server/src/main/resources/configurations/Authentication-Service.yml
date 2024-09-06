@@ -3,7 +3,7 @@ spring:
     name: Authentication-Service
   data:
     mongodb:
-      uri: mongodb+srv://hashanmadhuwantha2000:0nDyIlj8FhZQTj4H@educational-platform.etxrxi5.mongodb.net/Educational-Platform?retryWrites=true&w=majority&appName=Educational-Platform
+      uri: mongodb+srv://hashanmadhuwantha2000:@educational-platform.etxrxi5.mongodb.net/Educational-Platform?retryWrites=true&w=majority&appName=Educational-Platform
       auto-index-creation: true
 
 server:
