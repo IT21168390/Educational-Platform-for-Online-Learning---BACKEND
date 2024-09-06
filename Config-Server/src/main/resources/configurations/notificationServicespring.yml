@@ -8,13 +8,13 @@ spring:
     name: notificationServicespring
   data:
     mongodb:
-      uri: mongodb+srv://hashanmadhuwantha2000:0nDyIlj8FhZQTj4H@educational-platform.etxrxi5.mongodb.net/Educational-Platform?retryWrites=true&w=majority&appName=Educational-Platform
+      uri: mongodb+srv://hashanmadhuwantha2000:@educational-platform.etxrxi5.mongodb.net/Educational-Platform?retryWrites=true&w=majority&appName=Educational-Platform
       auto-index-creation: true
   mail:
     host: smtp-relay.brevo.com
     port: 587
-    username: 7485f1001@smtp-brevo.com
-    password: 1WQUGPY4RC9rOIyV
+    username: 
+    password: 
     properties:
       mail:
         smtp:
